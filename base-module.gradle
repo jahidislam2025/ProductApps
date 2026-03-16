@@ -1,0 +1,67 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+//apply plugin: 'com.google.dagger.hilt.android'
+
+
+android {
+    namespace = ProjectConfig.APP_ID
+    compileSdk = libs.versions.compile.sdk.get().toInteger()
+
+    defaultConfig {
+        minSdk = libs.versions.min.sdk.get().toInteger()
+        targetSdk = libs.versions.target.sdk.get().toInteger()
+        versionCode = ProjectConfig.VERSION_CODE
+        versionName = ProjectConfig.VERSION_NAME
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = ProjectConfig.JVM_TARGET
+    }
+}
+
+dependencies {
+    kapt libs.hilt.compiler
+    implementation libs.hilt.android
+    implementation libs.androidx.material3
+    // Unit test dependencies
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.truth)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.compose.ui.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockwebserver)
+    implementation(libs.retrofit)
+    // Android test dependencies
+    androidTestImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.compose.ui.test)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.mockwebserver)
+    androidTestImplementation(libs.hilt.testing)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+
+    androidTestImplementation(libs.androidx.espresso.core)
+}

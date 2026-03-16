@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ProductApps</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="enter_your_details_to_receive_a_rest_link">Enter your details to receive a rest link</string>
+    <string name="your_email">Your Email</string>
+    <string name="send">Send</string>
+    <string name="back_to_sign_in">&lt;\t Back to Sign In</string>
+    <string name="sign_in">Sign In</string>
+    <string name="you_have_not_any_account">You haven\'t any account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="welcome_back_you_have_been_missed">Welcome back, you’ve been missed!</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="getting_started">Getting Started</string>
+    <string name="create_an_account_to_continue_and_connect_with_the_people">Create an account to continue and connect with the people.</string>
+    <string name="your_name">Your Name</string>
+    <string name="feed">Feed</string>
+    <string name="favorites">Favorites</string>
+    <string name="settings">Settings</string>
+    <string name="no_items_found">"No items found"</string>
+    <string name="search">Search</string>
+    <string name="change_theme">Change Theme</string>
+</resources>
