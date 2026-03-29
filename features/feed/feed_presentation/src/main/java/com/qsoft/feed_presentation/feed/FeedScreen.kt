@@ -44,28 +44,53 @@ import com.qsoft.designsystem.R as DesignSystemR
 import com.qsoft.common.R as CommonR
 
 @Composable
-fun FeedScreen(state: FeedState, onEvent: (FeedEvent) -> Unit, loadNextPage: () -> Unit) {
+fun FeedScreen(
+    state: FeedState,
+    onEvent: (FeedEvent) -> Unit,
+    loadNextPage: () -> Unit
+) {
+    val selectedProduct = state.selectedProduct
+
+    if (selectedProduct != null) {
+        ProductDetailScreen(
+            state = ProductDetailState(
+                isLoading = false,
+                product = selectedProduct,
+                error = ""
+            ),
+            onBackClick = {
+                onEvent(FeedEvent.OnBackFromDetailEvent)
+            },
+            onFavoriteClick = { productId, isFavorite ->
+                onEvent(
+                    FeedEvent.OnFavoriteClickEvent(
+                        productId = productId,
+                        isFavorite = isFavorite
+                    )
+                )
+            }
+        )
+        return
+    }
+
     val listState = rememberLazyListState()
 
-    // fire when near bottom
     listState.OnBottomReached(buffer = 3) {
         loadNextPage()
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 10.r())
-            .background(color = MaterialTheme.colorScheme.background),
-
-        ) {
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
         CommonTextField(
             value = state.searchKey,
             onValueChange = {
                 onEvent(FeedEvent.OnSearchEvent(it))
             },
-            onTouched = {
-
-            },
+            onTouched = {},
             placeholder = stringResource(CommonR.string.search),
             isTouched = false,
             isValid = false,
@@ -75,11 +100,17 @@ fun FeedScreen(state: FeedState, onEvent: (FeedEvent) -> Unit, loadNextPage: () 
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
         )
 
-        LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(10.r())) {
+        LazyColumn(
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(10.r())
+        ) {
             items(items = state.productsList, key = { item -> item.id }) { item ->
                 ProductRow(
                     item = item,
-                    onClick = {
+                    onItemClick = {
+                        onEvent(FeedEvent.OnProductClickEvent(item))
+                    },
+                    onFavoriteClick = {
                         onEvent(
                             FeedEvent.OnFavoriteClickEvent(
                                 productId = item.id,
@@ -93,20 +124,24 @@ fun FeedScreen(state: FeedState, onEvent: (FeedEvent) -> Unit, loadNextPage: () 
             item {
                 when {
                     state.isLoading -> LoadingRow()
-                    else -> ErrorRow(state.error) { loadNextPage() }
+                    state.error.isNotBlank() -> ErrorRow(state.error) { loadNextPage() }
                 }
             }
         }
     }
 }
 
-
 @Composable
-fun ProductRow(item: ProductModel, onClick: () -> Unit) {
+fun ProductRow(
+    item: ProductModel,
+    onItemClick: () -> Unit,
+    onFavoriteClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(elevation = 1.r(), spotColor = MaterialTheme.colorScheme.surfaceDim)
+            .clickable { onItemClick() }
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -147,19 +182,17 @@ fun ProductRow(item: ProductModel, onClick: () -> Unit) {
                 Image(
                     painter = painterResource(DesignSystemR.drawable.ic_heart),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(color = if (item.isFavorite) Color.Red else Color.LightGray),
+                    colorFilter = ColorFilter.tint(
+                        color = if (item.isFavorite) Color.Red else Color.LightGray
+                    ),
                     modifier = Modifier
                         .size(24.r())
-                        .clickable {
-                            onClick()
-                        }
+                        .clickable { onFavoriteClick() }
                 )
             }
-
         }
     }
 }
-
 
 @Composable
 @Preview

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "f95232ac1639bee293fac73c377b66f8",
+    "identityHash": "170d231e6aafd309eb56dea080aaa446",
     "entities": [
       {
         "tableName": "product",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`productId` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `image` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL DEFAULT false, PRIMARY KEY(`productId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`productId` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `image` TEXT NOT NULL, `brand` TEXT, `price` REAL NOT NULL, `discountPercentage` REAL NOT NULL, `category` TEXT NOT NULL, `rating` REAL NOT NULL, `stock` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL DEFAULT false, PRIMARY KEY(`productId`))",
         "fields": [
           {
             "fieldPath": "productId",
@@ -33,6 +33,42 @@
             "notNull": true
           },
           {
+            "fieldPath": "brand",
+            "columnName": "brand",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "discountPercentage",
+            "columnName": "discountPercentage",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stock",
+            "columnName": "stock",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "isFavorite",
             "columnName": "isFavorite",
             "affinity": "INTEGER",
@@ -53,7 +89,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f95232ac1639bee293fac73c377b66f8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '170d231e6aafd309eb56dea080aaa446')"
     ]
   }
 }

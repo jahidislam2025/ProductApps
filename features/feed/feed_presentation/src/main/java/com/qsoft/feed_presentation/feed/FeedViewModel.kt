@@ -39,7 +39,11 @@ class FeedViewModel @Inject constructor(
         loadNextPage()
     }
 
-    private fun deleteProducts() { viewModelScope.launch { deleteProductsUseCase() } }
+    private fun deleteProducts() {
+        viewModelScope.launch {
+            deleteProductsUseCase()
+        }
+    }
 
     fun onEvent(event: FeedEvent) {
         when (event) {
@@ -55,10 +59,21 @@ class FeedViewModel @Inject constructor(
             is FeedEvent.OnSearchEvent -> {
                 state = state.copy(
                     searchKey = event.searchKey,
-                    // reset paging on new search
                     endReached = false
                 )
                 loadLocalData(event.searchKey)
+            }
+
+            is FeedEvent.OnProductClickEvent -> {
+                state = state.copy(
+                    selectedProduct = event.product
+                )
+            }
+
+            FeedEvent.OnBackFromDetailEvent -> {
+                state = state.copy(
+                    selectedProduct = null
+                )
             }
         }
     }
@@ -67,7 +82,14 @@ class FeedViewModel @Inject constructor(
         localDataJob?.cancel()
         localDataJob = viewModelScope.launch {
             getLocalDataUseCase(searchKey).collectLatest { products ->
-                state = state.copy(productsList = products)
+                val updatedSelectedProduct = state.selectedProduct?.let { selected ->
+                    products.find { it.id == selected.id } ?: selected
+                }
+
+                state = state.copy(
+                    productsList = products,
+                    selectedProduct = updatedSelectedProduct
+                )
             }
         }
     }
@@ -75,7 +97,7 @@ class FeedViewModel @Inject constructor(
     fun refreshProducts() {
         viewModelScope.launch {
             deleteProductsUseCase()
-            loadNextPage() // reload first page
+            loadNextPage()
         }
     }
 
@@ -92,7 +114,6 @@ class FeedViewModel @Inject constructor(
                     state = state.copy(
                         isLoading = false,
                         endReached = newItems.size < PAGE_SIZE
-                        // productsList comes automatically from local DB observer
                     )
                 }
 

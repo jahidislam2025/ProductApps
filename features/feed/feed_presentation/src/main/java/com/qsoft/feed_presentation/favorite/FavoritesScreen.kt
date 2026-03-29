@@ -24,6 +24,7 @@ import com.qsoft.common.R as CommonR
 @Composable
 fun FavoritesScreen(state: FavoriteState, onEvent: (FavoriteEvent) -> Unit) {
     val listState = rememberLazyListState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,17 +36,21 @@ fun FavoritesScreen(state: FavoriteState, onEvent: (FavoriteEvent) -> Unit) {
                 Text(
                     text = stringResource(CommonR.string.no_items_found),
                     style = bodyBoldTextStyle,
-                    modifier = Modifier.align(
-                        Alignment.Center
-                    )
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
         } else {
-            LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(10.r())) {
+            LazyColumn(
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(10.r())
+            ) {
                 itemsIndexed(state.productsList) { _, item ->
                     ProductRow(
                         item = item,
-                        onClick = {
+                        onItemClick = {
+                            // item click logic later
+                        },
+                        onFavoriteClick = {
                             onEvent(
                                 FavoriteEvent.OnFavoriteClickEvent(
                                     productId = item.id,
@@ -55,18 +60,16 @@ fun FavoritesScreen(state: FavoriteState, onEvent: (FavoriteEvent) -> Unit) {
                         }
                     )
                 }
-
             }
         }
     }
 }
-
 
 @Composable
 @Preview
 fun PreviewFavoritesScreen() {
     FavoritesScreen(
         state = FavoriteState(),
-        onEvent = {},
+        onEvent = {}
     )
 }

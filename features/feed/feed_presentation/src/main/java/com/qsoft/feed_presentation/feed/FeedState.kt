@@ -7,5 +7,6 @@ data class FeedState(
     val productsList: List<ProductModel> = emptyList(),
     val endReached: Boolean = false,
     val error: String = "",
-    val searchKey: String = ""
+    val searchKey: String = "",
+    val selectedProduct: ProductModel? = null
 )

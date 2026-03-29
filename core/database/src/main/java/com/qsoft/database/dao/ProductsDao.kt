@@ -36,4 +36,6 @@ interface ProductsDao {
 
     @Query("SELECT count(*) from product where isFavorite = 1")
     fun getFavoriteCount(): Flow<Int>
+
+
 }
