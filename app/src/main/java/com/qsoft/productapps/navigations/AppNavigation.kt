@@ -41,7 +41,7 @@ fun AppNavigation(
             composable("feed") {
                 val feedViewModel: FeedViewModel = hiltViewModel()
 
-                //এটাই Back button fix করবে
+                //এটাই Back button fix করবে.
                 BackHandler(enabled = feedViewModel.state.selectedProduct != null) {
                     feedViewModel.onEvent(FeedEvent.OnBackFromDetailEvent)
                 }
