@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -41,18 +42,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.qsoft.feed_domain.model.ProductModel
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notifications
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
+//Step 1: Screen শুরু হলে 3টা জিনিস check করে
 fun ProductDetailScreen(
-    state: ProductDetailState,
-    onBackClick: () -> Unit = {},
-    onFavoriteClick: (Int, Boolean) -> Unit = { _, _ -> }
+    state: ProductDetailState,// product data আসে
+    onBackClick: () -> Unit = {},// back button এর action
+    onFavoriteClick: (Int, Boolean) -> Unit = { _, _ -> } // favorite button এর action
 ) {
     val product = state.product
+    //Step 2: Loading বা Error check করে
 
+    //Loading হলে spinner দেখায়
     if (state.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -62,7 +68,7 @@ fun ProductDetailScreen(
         }
         return
     }
-
+    //Product null হলে error দেখায়
     if (product == null) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -74,8 +80,14 @@ fun ProductDetailScreen(
         }
         return
     }
+    //Product আছে → নিচের UI দেখায়
 
     val isInPreview = LocalInspectionMode.current
+    //ধাপ ৩ — ছবির Pager
+    val images: List<String> = listOf(product.image, product.image, product.image)
+    // একই ছবি তিনবার দিয়ে slider বানানো হয়েছে
+
+    val pagerState = rememberPagerState()
 
     Box(
         modifier = Modifier
@@ -105,26 +117,41 @@ fun ProductDetailScreen(
                         .height(320.dp)
                         .clip(RoundedCornerShape(26.dp))
                 ) {
-                    if (isInPreview) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.LightGray),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Preview Image",
-                                color = Color.DarkGray,
-                                fontSize = 14.sp
+                    HorizontalPager(
+                        count = images.size,
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { page ->
+                        if (isInPreview) {
+                            // Preview মোডে রঙিন placeholder দেখায়
+                            // Android Studio Preview তে → রঙিন placeholder box দেখাও
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        when (page % 3) {
+                                            0 -> Color(0xFFD0D0D0)
+                                            1 -> Color(0xFFB0C8D0)
+                                            else -> Color(0xFFD0B0C8)
+                                        }
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Image ${page + 1}",
+                                    color = Color.DarkGray,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        } else {
+                            // Real device এ → internet থেকে actual ছবি load করো
+                            AsyncImage(
+                                model = images[page],
+                                contentDescription = "${product.title} - image ${page + 1}",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
                             )
                         }
-                    } else {
-                        AsyncImage(
-                            model = product.image,
-                            contentDescription = product.title,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
                     }
 
                     Box(
@@ -157,7 +184,7 @@ fun ProductDetailScreen(
                             modifier = Modifier.size(18.dp)
                         )
                     }
-
+                    //ধাপ ৫ — Favorite বাটন(love button)
                     IconButton(
                         onClick = {
                             onFavoriteClick(product.id, !product.isFavorite)
@@ -170,16 +197,9 @@ fun ProductDetailScreen(
                             .background(Color.White.copy(alpha = 0.95f))
                     ) {
                         Icon(
-                            imageVector = if (product.isFavorite) {
-                                Icons.Default.Favorite
-                                //Icons.Filled.Notifications
-
-                            } else {
-                                Icons.Default.FavoriteBorder
-                                //Icons.Outlined.NotificationsNon
-                            },
+                            imageVector = if (product.isFavorite) Icons.Default.Favorite
+                            else Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite",
-                            //contentDescription = "Notification",
                             tint = if (product.isFavorite) Color(0xFFF57C5C) else Color(0xFF8A8A8A),
                             modifier = Modifier.size(18.dp)
                         )
@@ -192,11 +212,10 @@ fun ProductDetailScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        DotIndicator(active = false)
-                        Spacer(modifier = Modifier.width(4.dp))
-                        DotIndicator(active = true)
-                        Spacer(modifier = Modifier.width(4.dp))
-                        DotIndicator(active = false)
+                        images.forEachIndexed { index, _ ->
+                            if (index > 0) Spacer(modifier = Modifier.width(4.dp))
+                            DotIndicator(active = index == pagerState.currentPage)
+                        }
                     }
                 }
 
@@ -219,21 +238,19 @@ fun ProductDetailScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "$${String.format("%.2f", product.price)}",
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFF57C5C)
                     )
-
                     Spacer(modifier = Modifier.width(8.dp))
+                    //ধাপ ৪ — Price Calculation
 
-                    val oldPrice =
-                        product.price + ((product.price * product.discountPercentage) / 100.0)
-
+                    val oldPrice = product.price + ((product.price * product.discountPercentage) / 100.0)
+                    // মানে: current price থেকে discount যোগ করে আসল দাম বের করে
+                    // Example: price=249, discount=12% → oldPrice = 249 + 29.88 = ≈ 279
                     Text(
                         text = "$${String.format("%.0f", oldPrice)}",
                         fontSize = 13.sp,
@@ -262,27 +279,11 @@ fun ProductDetailScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                Text(
-                    text = "Category: ${product.category}",
-                    fontSize = 12.sp,
-                    color = Color(0xFF7A7A7A)
-                )
-
+                Text(text = "Category: ${product.category}", fontSize = 12.sp, color = Color(0xFF7A7A7A))
                 Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Rating: ${product.rating}",
-                    fontSize = 12.sp,
-                    color = Color(0xFF7A7A7A)
-                )
-
+                Text(text = "Rating: ${product.rating}", fontSize = 12.sp, color = Color(0xFF7A7A7A))
                 Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Stock: ${product.stock}",
-                    fontSize = 12.sp,
-                    color = Color(0xFF7A7A7A)
-                )
+                Text(text = "Stock: ${product.stock}", fontSize = 12.sp, color = Color(0xFF7A7A7A))
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -292,9 +293,7 @@ fun ProductDetailScreen(
                         .fillMaxWidth()
                         .height(52.dp),
                     shape = RoundedCornerShape(50),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFF57C5C)
-                    ),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF57C5C)),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     Text(
@@ -311,19 +310,21 @@ fun ProductDetailScreen(
     }
 }
 
+//ধাপ ৬ — DotIndicator
 @Composable
 fun DotIndicator(active: Boolean) {
     Box(
         modifier = Modifier
-            .size(if (active) 7.dp else 5.dp)
+            .size(if (active) 7.dp else 5.dp)// active dot বড়
             .clip(CircleShape)
             .background(
-                if (active) Color(0xFFF57C5C)
-                else Color(0xFFE4C8C1)
+                if (active) Color(0xFFF57C5C)// orange
+                else Color(0xFFE4C8C1) // ফ্যাকাশে
             )
     )
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ProductDetailScreenPreview() {
@@ -334,7 +335,7 @@ fun ProductDetailScreenPreview() {
             product = ProductModel(
                 id = 1,
                 title = "Powder Canister",
-                description = "The Powder Canister is a finely milled setting powder designed to set makeup and control shine. With a lightweight and translucent formula, it provides a smooth and matte finish.",
+                description = "The Powder Canister is a finely milled setting powder designed to set makeup and control shine.",
                 image = "",
                 isFavorite = true,
                 brand = "Beauty Brand",

@@ -214,6 +214,18 @@ fun PreviewFeedScreen() {
         loadNextPage = {}  // Scroll শেষে নতুন products load করে
                            // যেমন: page 1 → page 2 → page 3
 
+
+                // ② onEvent — User action ViewModel এ পাঠায়
+                //onEvent(FeedEvent.OnSearchEvent("phone"))      // search করলে
+                //onEvent(FeedEvent.OnProductClickEvent(item))   // product click করলে
+                //onEvent(FeedEvent.OnFavoriteClickEvent(...))   // heart click করলে
+    //onEvent(FeedEvent.OnBackFromDetailEvent)       // back click করলে
+
+// ③ loadNextPage — Scroll শেষে call হয়
+    //listState.OnBottomReached(buffer = 3) {
+        //loadNextPage() // নতুন 10টা product load হয়
+    //}
+
                 //**সম্পূর্ণ Flow:**
     //Screen load
     //↓
