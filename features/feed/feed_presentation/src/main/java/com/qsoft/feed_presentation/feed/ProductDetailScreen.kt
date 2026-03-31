@@ -205,16 +205,20 @@ fun ProductDetailScreen(
                         )
                     }
 
+                    //Row এর কাজ কী?
+                    //এই Row টি হলো Image Pager এর Dot Indicator (পেজ নির্দেশক বিন্দু)।
+                    //যখন একটি product এর একাধিক ছবি থাকে এবং সেগুলো swipe করে দেখা যায়, তখন নিচে ছোট ছোট বিন্দু (●) দেখায় — কোন ছবিতে আছো সেটা বোঝানোর জন্য।
+
                     Row(
                         modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 10.dp),
-                        horizontalArrangement = Arrangement.Center,
+                            .align(Alignment.BottomCenter)// ছবির নিচের মাঝখানে বসাও
+                            .padding(bottom = 10.dp),// নিচ থেকে একটু উপরে রাখো
+                        horizontalArrangement = Arrangement.Center,// বিন্দুগুলো মাঝখানে রাখো
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         images.forEachIndexed { index, _ ->
-                            if (index > 0) Spacer(modifier = Modifier.width(4.dp))
-                            DotIndicator(active = index == pagerState.currentPage)
+                            if (index > 0) Spacer(modifier = Modifier.width(4.dp))// বিন্দুর মাঝে ফাঁকা
+                            DotIndicator(active = index == pagerState.currentPage) // active বিন্দু হাইলাইট
                         }
                     }
                 }
