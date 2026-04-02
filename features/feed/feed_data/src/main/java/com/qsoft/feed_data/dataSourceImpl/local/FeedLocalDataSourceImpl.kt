@@ -29,8 +29,28 @@ class FeedLocalDataSourceImpl(
     }
 
 
-    override suspend fun updateIsFavorite(id: Int, isFavorite: Boolean) =
+/*    override suspend fun updateIsFavorite(id: Int, isFavorite: Boolean) =
         withContext(coroutineDispatcherProvider.io) {
             productsDao.updateIsFavorite(id = id, isFavorite = isFavorite)
+        }*/
+
+    override suspend fun updateIsFavorite(id: Int, isFavorite: Boolean) =
+        withContext(coroutineDispatcherProvider.io) {
+            productsDao.updateIsFavorite(
+                id = id,
+                isFavorite = if (isFavorite) 1 else 0  // ← Boolean → Int
+            )
+        }
+
+    // ← নতুন: WorkManager থেকে call হয়, সব favorite clear করে
+    override suspend fun clearAllFavorites() =
+        withContext(coroutineDispatcherProvider.io) {
+            productsDao.clearAllFavorites()
+        }
+
+    // ← নতুন যোগ করুন
+    override suspend fun deleteNonFavoriteProducts() =
+        withContext(coroutineDispatcherProvider.io) {
+            productsDao.deleteNonFavoriteProducts()
         }
 }

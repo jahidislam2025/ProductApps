@@ -1,5 +1,6 @@
 package com.qsoft.feed_data.di
 
+import android.content.Context
 import com.qsoft.common.util.CoroutineDispatcherProvider
 import com.qsoft.database.dao.ProductsDao
 import com.qsoft.feed_data.dataSource.local.FeedLocalDataSource
@@ -7,6 +8,8 @@ import com.qsoft.feed_data.dataSource.remote.FeedRemoteDataSource
 import com.qsoft.feed_data.dataSourceImpl.local.FeedLocalDataSourceImpl
 import com.qsoft.feed_data.dataSourceImpl.remote.FeedRemoteDataSourceImpl
 import com.qsoft.feed_data.repository.FeedRepositoryImpl
+import com.qsoft.feed_data.worker.FavoriteClearScheduler
+import com.qsoft.feed_data.worker.FavoriteClearSchedulerImpl
 import com.qsoft.feed_domain.repository.FeedRepository
 import com.qsoft.network.PublicApiService
 import com.qsoft.network.di.TypeEnum
@@ -15,6 +18,7 @@ import com.qsoft.network.utils.NetworkHandler
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -53,5 +57,14 @@ class FeedDataModule {
             productsDao = productsDao,
             coroutineDispatcherProvider = coroutineDispatcherProvider
         )
+    }
+
+    // ← নতুন যোগ করা হয়েছে
+    @Singleton
+    @Provides
+    fun provideFavoriteClearScheduler(
+        @ApplicationContext context: Context
+    ): FavoriteClearScheduler {
+        return FavoriteClearSchedulerImpl(context)
     }
 }

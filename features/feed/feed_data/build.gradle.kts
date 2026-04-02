@@ -19,4 +19,5 @@ dependencies {
     implementation(project(Modules.FEED_DOMAIN))
     implementation(project(Modules.DATABASE))
     implementation(project(Modules.NETWORK))
+
 }

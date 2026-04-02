@@ -29,6 +29,7 @@ class FavoriteViewModel @Inject constructor(
     private fun loadLocalData() {
         viewModelScope.launch {
             getFavoritesProductsUseCase().collectLatest { products ->
+                android.util.Log.d("FavoriteVM", "products size: ${products.size}")//
                 state = state.copy(productsList = products)
 
             }

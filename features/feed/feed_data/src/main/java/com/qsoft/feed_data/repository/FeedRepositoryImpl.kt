@@ -52,10 +52,17 @@ class FeedRepositoryImpl(
         }
     }
 
-    override suspend fun deleteProducts() {
+/*   override suspend fun deleteProducts() {
         if (networkHandler.isNetworkAvailable()) {
             feedLocalDataSource.deleteUsers()
             //feedLocalDataSource.resetPrimaryKey()
+            feedLocalDataSource.deleteNonFavoriteProducts()
+        }
+    }*/
+
+    override suspend fun deleteProducts() {
+        if (networkHandler.isNetworkAvailable()) {
+            feedLocalDataSource.deleteNonFavoriteProducts()
         }
     }
 
@@ -77,8 +84,8 @@ class FeedRepositoryImpl(
     }
 
     override suspend fun updateFavorite(productId: Int, isFavorite: Boolean) {
+        android.util.Log.d("UpdateFavorite", "repo called: id=$productId, isFavorite=$isFavorite")
         feedLocalDataSource.updateIsFavorite(id = productId, isFavorite = isFavorite)
     }
-
 
 }

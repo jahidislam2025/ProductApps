@@ -11,4 +11,6 @@ interface FeedLocalDataSource {
     suspend fun deleteUsers()
     //suspend fun resetPrimaryKey()
     suspend fun updateIsFavorite(id: Int, isFavorite: Boolean)
+    suspend fun clearAllFavorites()
+    suspend fun deleteNonFavoriteProducts() // ← নতুন যোগ
 }

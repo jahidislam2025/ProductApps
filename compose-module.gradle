@@ -77,4 +77,9 @@ dependencies {
 
     // For debug builds (to inspect semantics in tests)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.work.manager)
+    implementation(libs.hilt.work)
+
+
 }

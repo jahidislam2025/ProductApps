@@ -117,6 +117,8 @@ fun FeedScreen(
                         onEvent(FeedEvent.OnProductClickEvent(item)) // click → detail
                     },
                     onFavoriteClick = {
+
+                        android.util.Log.d("FeedVM", "heart button clicked: id=${item.id}")
                         onEvent( // heart click → favorite
                             FeedEvent.OnFavoriteClickEvent(
                                 productId = item.id,

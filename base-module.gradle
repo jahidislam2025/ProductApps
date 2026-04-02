@@ -66,4 +66,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.work.manager)
+
+    implementation(libs.hilt.work)
+
+
 }

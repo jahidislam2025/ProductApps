@@ -49,6 +49,7 @@ class FeedViewModel @Inject constructor(
         when (event) {
             is FeedEvent.OnFavoriteClickEvent -> {
                 viewModelScope.launch {
+                    android.util.Log.d("FeedVM", "clicked: id=${event.productId}, isFavorite=${event.isFavorite}")
                     updateFavoriteUseCase(
                         productId = event.productId,
                         isFavorite = event.isFavorite

@@ -9,16 +9,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProductsDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE) // ← REPLACE থেকে IGNORE করুন
     suspend fun insertProducts(products: List<ProductEntity>)
 
-    @Query("DELETE  FROM product")
+    @Query("DELETE FROM product")
     suspend fun deleteProducts()
-
-    // @Query("DELETE FROM sqlite_sequence WHERE name='product'")
-    /*@Query("DELETE FROM sqlite_sequence")
-    suspend fun resetPrimaryKey()*/
-
 
     @Query(
         """
@@ -31,11 +27,19 @@ interface ProductsDao {
     @Query("SELECT * FROM product WHERE isFavorite = 1")
     fun getFavoriteProducts(): Flow<List<ProductEntity>>
 
-    @Query("UPDATE product SET isFavorite = :isFavorite WHERE productID =:id")
-    fun updateIsFavorite(id: Int, isFavorite: Boolean)
+/*    @Query("UPDATE product SET isFavorite = :isFavorite WHERE productId = :id")
+    fun updateIsFavorite(id: Int, isFavorite: Boolean)*/
+
+
+    @Query("UPDATE product SET isFavorite = :isFavorite WHERE productId = :id")
+    suspend fun updateIsFavorite(id: Int, isFavorite: Int)
 
     @Query("SELECT count(*) from product where isFavorite = 1")
     fun getFavoriteCount(): Flow<Int>
 
+    @Query("UPDATE product SET isFavorite = 0 WHERE isFavorite = 1")
+    suspend fun clearAllFavorites()
 
+    @Query("DELETE FROM product WHERE isFavorite = 0") // ← নতুন যোগ
+    suspend fun deleteNonFavoriteProducts()
 }
