@@ -38,12 +38,14 @@ class FeedDataModule {
     fun providesFeedRepository(
         feedLocalDataSource: FeedLocalDataSource,
         feedRemoteDataSource: FeedRemoteDataSource,
-        networkHandler: NetworkHandler
+        networkHandler: NetworkHandler,
+        favoriteClearScheduler: FavoriteClearScheduler
     ): FeedRepository {
         return FeedRepositoryImpl(
             feedRemoteDataSource = feedRemoteDataSource,
             networkHandler = networkHandler,
-            feedLocalDataSource = feedLocalDataSource
+            feedLocalDataSource = feedLocalDataSource,
+            favoriteClearScheduler = favoriteClearScheduler
         )
     }
 

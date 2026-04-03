@@ -76,6 +76,7 @@ mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", versio
 compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
 autofill = { group = "androidx.autofill", name = "autofill", version.ref = "autofill" }
 hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-work" }
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-work" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }

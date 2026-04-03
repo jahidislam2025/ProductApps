@@ -62,6 +62,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
 
     implementation(project(Modules.DESIGN_SYSTEM))
     implementation(project(Modules.COMMON))

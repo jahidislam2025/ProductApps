@@ -3,6 +3,7 @@ package com.qsoft.feed_data.repository
 import com.qsoft.feed_data.dataSource.local.FeedLocalDataSource
 import com.qsoft.feed_data.dataSource.remote.FeedRemoteDataSource
 import com.qsoft.feed_data.mapper.toEntity
+import com.qsoft.feed_data.worker.FavoriteClearScheduler
 import com.qsoft.feed_data.mapper.toResponse
 import com.qsoft.feed_domain.model.ProductModel
 import com.qsoft.feed_domain.repository.FeedRepository
@@ -12,13 +13,15 @@ import com.qsoft.network.utils.NetworkHandler
 import com.qsoft.network.utils.ResultWrapper
 import com.qsoft.network.utils.parseHttpException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 
 class FeedRepositoryImpl(
     private val feedLocalDataSource: FeedLocalDataSource,
     private val feedRemoteDataSource: FeedRemoteDataSource,
-    private val networkHandler: NetworkHandler
+    private val networkHandler: NetworkHandler,
+    private val favoriteClearScheduler: FavoriteClearScheduler
 ) : FeedRepository {
     override suspend fun getProducts(
         limit: Int,
@@ -86,6 +89,16 @@ class FeedRepositoryImpl(
     override suspend fun updateFavorite(productId: Int, isFavorite: Boolean) {
         android.util.Log.d("UpdateFavorite", "repo called: id=$productId, isFavorite=$isFavorite")
         feedLocalDataSource.updateIsFavorite(id = productId, isFavorite = isFavorite)
+
+        if (isFavorite) {
+            favoriteClearScheduler.schedule()
+            return
+        }
+
+        val favoriteCount = feedLocalDataSource.getFavoriteProductsCount().first()
+        if (favoriteCount == 0) {
+            favoriteClearScheduler.cancel()
+        }
     }
 
 }

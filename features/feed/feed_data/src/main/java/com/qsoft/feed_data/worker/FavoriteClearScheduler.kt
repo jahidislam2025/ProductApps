@@ -18,7 +18,8 @@ class FavoriteClearSchedulerImpl @Inject constructor(
 
     override fun schedule() {
         val request = OneTimeWorkRequestBuilder<ClearFavoritesWorker>()
-            .setInitialDelay(1, TimeUnit.HOURS) // 1 ঘণ্টা পর একবার run
+            //.setInitialDelay(1, TimeUnit.HOURS)// 3 ঘণ্টা পর clear হবে
+            .setInitialDelay(3, TimeUnit.MINUTES)
             .build()
 
         WorkManager.getInstance(context).enqueueUniqueWork(
