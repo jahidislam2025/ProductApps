@@ -16,6 +16,7 @@ class ClearFavoritesWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
+            //এখানেই আসল clear হয়
             feedLocalDataSource.clearAllFavorites()
             Result.success()
         } catch (e: Exception) {
