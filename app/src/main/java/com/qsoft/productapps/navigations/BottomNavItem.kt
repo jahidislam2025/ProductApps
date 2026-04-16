@@ -18,5 +18,10 @@ sealed class BottomNavItem(
         titleRes = com.qsoft.common.R.string.favorite,
         iconRes = DesignSystemR.drawable.ic_heart_smile
     )
-}
 
+    object Survey : BottomNavItem(
+        route = "survey",
+        titleRes = com.qsoft.common.R.string.survey,
+        iconRes = DesignSystemR.drawable.ic_heart_smile
+    )
+}

@@ -81,5 +81,7 @@ dependencies {
     implementation(libs.work.manager)
     implementation(libs.hilt.work)
 
+    implementation(libs.compose.material.icons.extended)
+
 
 }

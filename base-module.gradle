@@ -70,5 +70,7 @@ dependencies {
 
     implementation(libs.hilt.work)
 
+    implementation(libs.compose.material.icons.extended)
+
 
 }

@@ -26,4 +26,5 @@
 
     <string name="dashboard">Dashboard</string>
     <string name="favorite">Favorite</string>
+    <string name="survey">Survey</string>
 </resources>

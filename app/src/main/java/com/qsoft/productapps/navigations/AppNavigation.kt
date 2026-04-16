@@ -29,6 +29,10 @@ import com.qsoft.feed_presentation.favorite.FavoritesScreen
 import com.qsoft.feed_presentation.feed.FeedEvent
 import com.qsoft.feed_presentation.feed.FeedScreen
 import com.qsoft.feed_presentation.feed.FeedViewModel
+import com.qsoft.feed_presentation.surveyui.SurveyFormScreen
+import com.qsoft.feed_presentation.surveyui.SurveyScreen
+
+const val SURVEY_FORM_ROUTE = "survey_form"
 
 @Composable
 fun AppNavigation(
@@ -39,17 +43,16 @@ fun AppNavigation(
 
     val bottomNavItems = listOf(
         BottomNavItem.Dashboard,
-        BottomNavItem.Favorite
+        BottomNavItem.Favorite,
+        BottomNavItem.Survey
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // ViewModel উপরে একবারই নেওয়া হয়েছে
     val feedViewModel: FeedViewModel = hiltViewModel()
 
-    //hideBottomBar এখানে calculate করা হয়েছে
-    val hideBottomBar = currentRoute == "dashboard" &&
+    val hideBottomBar = currentRoute == BottomNavItem.Dashboard.route &&
             feedViewModel.state.selectedProduct != null
 
     Scaffold(
@@ -78,7 +81,9 @@ fun AppNavigation(
                                     contentDescription = stringResource(item.titleRes)
                                 )
                             },
-                            label = { Text(stringResource(item.titleRes)) }
+                            label = {
+                                Text(text = stringResource(item.titleRes))
+                            }
                         )
                     }
                 }
@@ -90,9 +95,8 @@ fun AppNavigation(
             startDestination = BottomNavItem.Dashboard.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Dashboard — same feedViewModel instance use হচ্ছে
-            composable(BottomNavItem.Dashboard.route) {
 
+            composable(BottomNavItem.Dashboard.route) {
                 BackHandler(enabled = feedViewModel.state.selectedProduct != null) {
                     feedViewModel.onEvent(FeedEvent.OnBackFromDetailEvent)
                 }
@@ -104,7 +108,6 @@ fun AppNavigation(
                 )
             }
 
-            //Favorite Tab
             composable(BottomNavItem.Favorite.route) {
                 val favoriteViewModel: FavoriteViewModel = hiltViewModel()
 
@@ -112,6 +115,14 @@ fun AppNavigation(
                     state = favoriteViewModel.state,
                     onEvent = favoriteViewModel::onEvent
                 )
+            }
+
+            composable(BottomNavItem.Survey.route) {
+                SurveyScreen(navController = navController)
+            }
+
+            composable(SURVEY_FORM_ROUTE) {
+                SurveyFormScreen()
             }
         }
     }
